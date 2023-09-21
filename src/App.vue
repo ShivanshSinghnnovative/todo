@@ -1,5 +1,6 @@
 <template>
-  
+  <router-link to="/AddnewProject">Add a new Project </router-link>
+  <router-view></router-view>
 </template>
 
 <script>
