@@ -11,14 +11,25 @@ const routes=[
     },
     {
         name:'AddnewProject',
-        path:'/AddnewProject',
+        path:'/addnewproject',
         component:AddnewProject
     },
     {
         name:'UpdateTodo',
         path:'/UpdateTodo/:id',
         component:UpdateTodo
-    }
+    },
+    {
+        name:'OngoingPage',
+        path:'/ongoing',
+        component:LandingPage
+    },
+    {
+        name:'CompletedPage',
+        path:'/completed',
+        component:LandingPage
+    },
+    
 ]
 const router = createRouter({
     history:createWebHashHistory(),

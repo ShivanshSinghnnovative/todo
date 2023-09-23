@@ -1,12 +1,12 @@
 <template>
-    <div class="projectBox">
+    <div class="todoBox">
         <h3 class="title">TITLE</h3>
         <input class="titleBox" v-model="titlees" type="text">
         <div v-if="titlees.length == 0" class="error">* please enter title</div>
         <h4 class="title">DETAILS</h4>
         <textarea class="detailBox" v-model="detailss" rows="4" cols="30"></textarea>
         <div v-if="detailss.length == 0" class="error">* please enter details</div>
-        <button class="updateProject" @click="updateProject(index)">Update todo</button>
+        <button class="updatedTodo" @click="updateProject(index)">Update todo</button>
 
 
     </div>
@@ -15,58 +15,75 @@
 <script>
 
 export default {
-
     name: 'UpdateTodo',
-
     data() {
         return {
-            titlees: this.$route.query.title,
-            detailss: this.$route.query.description,
-
+            titlees: ``,
+            detailss: '',
             index: this.$route.params.id
         }
     },
+    created() {
+        this.updateTitle();
+    },
     methods: {
+        updateTitle() {
+            const id = this.$route.params.id;
+            let todos = JSON.parse(localStorage.getItem('vue-todo'));
+            const editIndex = todos.findIndex(todo => todo.id == id);
+            this.titlees = todos[editIndex].title;
+            this.detailss = todos[editIndex].description;
+        },
         updateProject(id) {
             let todos = JSON.parse(localStorage.getItem('vue-todo'));
-           
+
             console.log(todos)
             console.log(id)
+
             const index = todos.findIndex(todo => todo.id == id);
 
             console.log(index)
-                todos[index].title = this.titlees;
-                todos[index].description = this.detailss;
-                localStorage.setItem('vue-todo', JSON.stringify(todos));
-                console.log("jf")
+            if(this.titlees.length!=0 && this.detailss.length!=0){
+            todos[index].title = this.titlees;
+            todos[index].description = this.detailss;
+            localStorage.setItem('vue-todo', JSON.stringify(todos));
+            console.log("jf")
 
-          this.$router.push('/');
+            this.$router.push('/');}
         }
     }
 }
 
 </script>
-<style>
+<style scoped>
 .error {
     color: red;
     font-size: 12px;
+    width: 90%;
     text-align: left;
+    margin-top: 1rem;
     margin-left: 2rem;
 }
 
-.projectBox {
+.todoBox {
     background-color: white;
     width: 80%;
     height: 80%;
     margin: 2rem 10% 4rem 10%;
     padding-bottom: 2rem;
     border-radius: 1rem;
-
+    text-align: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  
 }
 
 .title {
     font-size: 25px;
-    text-align: left;
+    width: 90%;
+   text-align: left;
     margin-top: 2rem;
     padding-top: 1rem;
     margin-left: 2rem;
@@ -86,10 +103,10 @@ export default {
 }
 
 input {
-    font-size: 22px;
+    font-size: 30px;
 }
 
-.updateProject {
+.updatedTodo {
     background-color: rgb(78, 119, 78);
     padding: 1rem;
     margin: 1rem;

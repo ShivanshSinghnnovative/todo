@@ -1,14 +1,12 @@
 <template>
-    <div class="projectBox">
+    <div class="todoBox">
         <h3 class="title">TITLE</h3>
-        <input class="titleBox" v-model="titlee" type="text">
-        <div v-if="errorMessage.lenght != 0 && titlee.length == 0" class="error">* please enter title</div>
+        <input class="titleBox" v-model="title" type="text">
+        <div v-if="errorMessage.lenght != 0 && title.length == 0" class="error">* please enter title</div>
         <h4 class="title">DETAILS</h4>
         <textarea class="detailBox" v-model="details" rows="4" cols="30"></textarea>
         <div v-if="errorMessage.lenght != 0 && details.length == 0" class="error">* please enter details</div>
-        <button class="updateProject" @click="addProject()">Add todo</button>
-
-
+        <button class="addTodo" @click="addTodo()">Add todo</button>
     </div>
 </template>
 <script>
@@ -19,34 +17,35 @@ export default {
     name: 'AddnewProject',
     data() {
         return {
-            titlee: '',
+            title: '',
             details: '',
             todos : [],
             errorMessage: [],
             submitButton: false,
+            uncomplete:false
             
         }
     },
     created() {
-        this.todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
-        
+        this.todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')     
     },
     methods: {
-        addProject() {
-            if (this.titlee.length == 0) {
+        addTodo() {
+            if (this.title.length == 0) {
                 this.errorMessage.push('titlenotpresent');
             }
             if (this.details.length == 0) {
                 this.errorMessage.push('error');
             }
-            if(this.titlee.length != 0 && this.details.length != 0){
+            if(this.title.length != 0 && this.details.length != 0){
             const id = Math.floor(Math.random()*100000); 
             this.todos.push({
                 'id':id,
-                'title': this.titlee,
-                'description': this.details
+                'title': this.title,
+                'description': this.details,
+                'uncompleted':this.uncomplete,
             });
-            this.titlee = '';
+            this.title = '';
             this.details = '';
         }
             this.submitButton = true;
@@ -62,23 +61,31 @@ export default {
 .error {
     color: red;
     font-size: 12px;
+    width: 90%;
     text-align: left;
+    margin-top: 1rem;
     margin-left: 2rem;
 }
 
-.projectBox {
+.todoBox {
     background-color: white;
     width: 80%;
     height: 80%;
     margin: 2rem 10% 4rem 10%;
     padding-bottom: 2rem;
     border-radius: 1rem;
-
+    text-align: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  
 }
 
 .title {
     font-size: 25px;
-    text-align: left;
+    width: 90%;
+   text-align: left;
     margin-top: 2rem;
     padding-top: 1rem;
     margin-left: 2rem;
@@ -98,10 +105,10 @@ export default {
 }
 
 input {
-    font-size: 22px;
+    font-size: 30px;
 }
 
-.updateProject {
+.addTodo {
     background-color: rgb(78, 119, 78);
     padding: 1rem;
     margin: 1rem;
