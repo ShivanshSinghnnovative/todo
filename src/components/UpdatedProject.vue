@@ -1,11 +1,11 @@
 <template>
 <div class="todoBox">
     <h3 class="title">TITLE</h3>
-    <input class="titleBox" v-model="updatedtitles" type="text">
-    <div v-if="updatedtitles.length == 0" class="error">* please enter title</div>
+    <input class="titleBox" v-model="project.updatedtitles" type="text">
+    <div v-if="project.updatedtitles.trim().length == 0" class="error">* please enter title</div>
     <h4 class="title">DETAILS</h4>
-    <textarea class="detailBox" v-model="updateddetails" rows="4" cols="30"></textarea>
-    <div v-if="updateddetails.length == 0" class="error">* please enter details</div>
+    <textarea class="detailBox" v-model="project.updateddetails" rows="4" cols="30"></textarea>
+    <div v-if="project.updateddetails.trim().length == 0" class="error">* please enter details</div>
     <button class="updatedTodo" @click="updateProject(index)">Update todo</button>
 </div>
 </template>
@@ -15,31 +15,39 @@ export default {
     name: 'UpdateTodo',
     data() {
         return {
-            updatedtitles: ``,
-            updateddetails: '',
+            project: {
+                updatedtitles: ``,
+                updateddetails: '',
+            },
+            todos:[],
+            editIndex:-1,
             index: this.$route.params.id
         }
     },
     mounted() {
+        this.todos = JSON.parse(localStorage.getItem('vue-todo'));
+        
         this.updateTitle();
+       
     },
     methods: {
         updateTitle() {
             const id = this.$route.params.id;
-            let todos = JSON.parse(localStorage.getItem('vue-todo'));
-            const editIndex = todos.findIndex(todo => todo.id == id);
-            this.updatedtitles = todos[editIndex].title;
-            this.updateddetails = todos[editIndex].description;
+            this.editIndex = this.todos.findIndex(todo => todo.id == id);
+            this.project.updatedtitles = this.todos[this.editIndex].title.trim();
+            this.project.updateddetails = this.todos[this.editIndex].description.trim();
         },
-        updateProject(id) {
-            let todos = JSON.parse(localStorage.getItem('vue-todo'));
-            const index = todos.findIndex(todo => todo.id == id);
-            if (this.updatedtitles.length != 0 && this.updateddetails.length != 0) {
-                todos[index].title = this.updatedtitles;
-                todos[index].description = this.updateddetails;
-                localStorage.setItem('vue-todo', JSON.stringify(todos));
-                this.$router.push('/');
+        updateProject() {
+            if (this.project.updateddetails.trim().length != 0 && this.project.updatedtitles.trim().length != 0) {
+                if (this.project.updatedtitles.length != 0 && this.project.updateddetails.length != 0) {
+                    this.todos[this.editIndex].title = this.project.updatedtitles;
+                    this.todos[this.editIndex].description = this.project.updateddetails;
+                    localStorage.setItem('vue-todo', JSON.stringify(this.todos));
+                    this.$router.push('/');
+                }
+
             }
+           
         }
     }
 }

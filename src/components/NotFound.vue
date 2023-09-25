@@ -1,14 +1,13 @@
 <template>
-<h1 class="error"> 404 not found</h1>
+    <h1 class="error"> 404 not found</h1>
 </template>
 
-  
 <script>
 export default {
     name: 'NotFound',
 }
 </script>
-  
+
 <style scoped>
 .error {
     color: rgb(255, 255, 255);

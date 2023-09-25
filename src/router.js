@@ -1,7 +1,7 @@
 import { createWebHashHistory, createRouter } from "vue-router";
-const AddnewTodo = () => import("./pages/AddnewTodos.vue");
+const AddnewTodo = () => import("./pages/AddnewProject.vue");
 const HomePage = () => import("./pages/HomePage.vue");
-const UpdateTodo = () => import("./components/UpdateTodo.vue");
+const UpdateTodo = () => import("./components/UpdatedProject.vue");
 const NotFound = () => import("./components/NotFound.vue");
 
 const routes = [

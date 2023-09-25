@@ -1,16 +1,13 @@
 <template>
-    <nav class="projectPaths">
-        <router-link :to="{ path: `/viewall`  }" class="viewAll"  >VIEW ALL</router-link>
-        <router-link :to="{ path: `/completed` }" class="viewAll" >COMPLETED</router-link>
-        <router-link :to="{ path: `/ongoing` }" class="viewAll" >ONGOING</router-link>
-    </nav>
+   <projectHeader></projectHeader>
+
     <div class="projectBoxs" v-for="todoData in filteredTodo" :key="todoData.id" :class="todoData.completed ? 'green-icon green' : 'white-icon white'" >
         <div class="display">
             <div @click="showDetails(todoData)" class="titleHeading"> {{ todoData.title }}
-                <div v-if="todoData?.showDetail" class="deatilHeading">{{ todoData.description }}</div>
+                <div v-if="todoData?.showDetail" class="deatilHeading"> {{ todoData.description }}</div>
             </div>
             <div class="icon">
-                <font-awesome-icon icon="fa-solid fa-trash" @click="deletetitle(todoData)" class="icon-styling" />
+                <font-awesome-icon icon="fa-solid fa-trash" @click="deleteProject(todoData)" class="icon-styling" />
                 <router-link :to="{ path: `/UpdateTodo/${todoData.id}` }">
                     <font-awesome-icon icon="fa-solid fa-pen" class="icon-styling" />
                 </router-link>
@@ -20,39 +17,38 @@
             </div>
         </div>
     </div>
-    <div class="noTodo" v-if="filteredTodo.length === 0 && this.$route.path === '/viewall'">
-        <p>ADD TODO </p>
-    </div>
-    <div class="noTodo" v-if="filteredTodo.length === 0 && this.$route.path === '/completed'">
-        <p>NO COMPLETED TODO </p>
-    </div>
-    <div class="noTodo" v-if="filteredTodo.length === 0 && this.$route.path === '/ongoing'">
-        <p>NO ONGOING TODO</p>
-    </div>
+    <div class="noTodo" v-if="filteredTodo.length === 0">
+        <p v-if="this.$route.path === '/viewall'">ADD TODO</p>
+        <p v-else-if="this.$route.path === '/completed'">NO COMPLETED TODO</p>
+        <p v-else-if="this.$route.path === '/ongoing'">NO ONGOING TODO</p>
+      </div>
     </template>
     
     <script>
+    import projectHeader from '../components/ProjectHeader.vue'
     const STORAGE_KEY = 'vue-todo';
+    
     export default {
         name: 'HomePage',
-        data() {
-            return {
-                titles: [],
-                heading: ''
+        data(){
+            return{
+                todosItem:[]
             }
         },
+        components:{
+            projectHeader,
+        },
         created() {
-            let todosItem = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-            this.titles = todosItem
+             this.todosItem = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
         },
         computed: {     
             filteredTodo() {
                 if (this.$route.path === '/viewall') {
-                    return this.titles;
+                    return this.todosItem;
                 } else if (this.$route.path === '/ongoing') {
-                    return this.titles.filter(todoData => !todoData.completed);
+                    return this.todosItem.filter(todoData => !todoData.completed);
                 } else if (this.$route.path === '/completed') {
-                    return this.titles.filter(todoData => todoData.completed);
+                    return this.todosItem.filter(todoData => todoData.completed);
                 }
                 return [];
             },
@@ -60,12 +56,12 @@
         },
         methods: {
     
-            deletetitle(title) {
-                const index = this.titles.indexOf(title);
+            deleteProject(title) {
+                const index = this.todosItem.indexOf(title);
                 if (index !== -1) {
-                    this.titles.splice(index, 1);
+                    this.todosItem.splice(index, 1);
                 }
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(this.titles));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(this.todosItem));
             },
     
             showDetails(todoData) {
@@ -76,9 +72,9 @@
                 }
             },
             changeStatus(idforComplete) {
-                const index = this.titles.indexOf(idforComplete);
-                this.titles[index].completed = !this.titles[index].completed
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(this.titles));
+                const index = this.todosItem.indexOf(idforComplete);
+                this.todosItem[index].completed = !this.todosItem[index].completed
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(this.todosItem));
             }
     
         }
@@ -87,13 +83,7 @@
     </script>
     
     <style scoped>
-    .viewAll {
-        text-decoration: none !important;
-        color: gray;
-        margin-top: 2rem;
-        font-weight: 600;
-    }
-    
+   
     .icon-styling {
         color: gray;
         font-size: 25px;
@@ -111,16 +101,9 @@
         color: red;
     }
     
-    nav a.router-link-active{
-        border-bottom: 4px solid green ;
-        
-        }
+   
     
-    .projectPaths {
-        display: flex;
-        gap: 1.5rem;
-        margin-left: 1rem;
-    }
+   
     
     .green {
         border-left: 10px solid green;
