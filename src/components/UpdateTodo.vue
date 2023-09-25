@@ -20,7 +20,7 @@ export default {
             index: this.$route.params.id
         }
     },
-    created() {
+    mounted() {
         this.updateTitle();
     },
     methods: {
@@ -33,13 +33,7 @@ export default {
         },
         updateProject(id) {
             let todos = JSON.parse(localStorage.getItem('vue-todo'));
-
-            console.log(todos)
-            console.log(id)
-
             const index = todos.findIndex(todo => todo.id == id);
-
-            console.log(index)
             if (this.updatedtitles.length != 0 && this.updateddetails.length != 0) {
                 todos[index].title = this.updatedtitles;
                 todos[index].description = this.updateddetails;

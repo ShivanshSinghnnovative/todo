@@ -1,34 +1,42 @@
 import { createWebHashHistory, createRouter } from "vue-router";
-const AddnewProject = () => import("./components/AddnewProject.vue");
-const LandingPage = () => import("./components/LandingPage.vue");
+const AddnewTodo = () => import("./pages/AddnewTodos.vue");
+const HomePage = () => import("./pages/HomePage.vue");
 const UpdateTodo = () => import("./components/UpdateTodo.vue");
 const NotFound = () => import("./components/NotFound.vue");
 
 const routes = [
   {
-    name: "LandingPage",
+    name: "HomePage",
     path: "/",
-    component: LandingPage,
+    component: HomePage,
+    redirect: '/viewall',
+    children: [
+      {
+        name: "OngoingPage",
+        path: "ongoing", 
+        component: HomePage, 
+      },
+      {
+        name: "ViewAll",
+        path: "viewall", 
+        component: HomePage, 
+      },
+      {
+        name: "CompletedPage",
+        path: "completed", 
+        component: HomePage, 
+      },
+    ],
   },
   {
-    name: "AddnewProject",
-    path: "/addnewproject",
-    component: AddnewProject,
+    name: "AddnewTodo",
+    path: "/addnewtodo",
+    component: AddnewTodo,
   },
   {
     name: "UpdateTodo",
     path: "/UpdateTodo/:id",
     component: UpdateTodo,
-  },
-  {
-    name: "OngoingPage",
-    path: "/ongoing",
-    component: LandingPage,
-  },
-  {
-    name: "CompletedPage",
-    path: "/completed",
-    component: LandingPage,
   },
   {
     name: "NotFound",
