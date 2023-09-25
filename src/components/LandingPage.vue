@@ -4,78 +4,30 @@
     <router-link :to="{ path: `/completed` }" class="viewAll" :class="{clicked : currentRoute === '/completed' }">COMPLETED</router-link>
     <router-link :to="{ path: `/ongoing` }" class="viewAll" :class="{ clicked: currentRoute === '/ongoing' }">ONGOING</router-link>
 </div>
-<div v-if="this.$route.path==`/`">
-    <div class="projectBoxs" v-for="titled in titles" :key="titled" :class="titled.uncompleted ? 'green' : 'white'">
-
-        <div class="display">
-            <div @click="showDetails(titled)" class="titleHeading"> {{ titled.title }}
-
-                <div v-if="titled.showDetail" class="deatilHeading">
-                    {{ titled.description }}
-                </div>
-            </div>
-            <div class="icon">
-                <font-awesome-icon icon="fa-solid fa-trash" @click="deletetitle(titled)" class="icon-styling"/>
-
-                <router-link :to="{ path: `/UpdateTodo/${titled.id}` }">
-                    <font-awesome-icon icon="fa-solid fa-pen" class="icon-styling"/>
-                </router-link>
-                <div @click="completedTodo(titled)">
-                    <font-awesome-icon :icon="titled.uncompleted ? 'fas fa-check' : 'fas fa-check'" :class="titled.uncompleted ? 'green-icon' : 'white-icon'" />
-                </div>
+<div class="projectBoxs" v-for="titled in filteredTitles" :key="titled.id" :class="getTitleClass(titled)">
+    <div class="display">
+        <div @click="showDetails(titled)" class="titleHeading">{{ titled.title }}
+            <div v-if="titled.showDetail" class="deatilHeading">{{ titled.description }}</div>
+        </div>
+        <div class="icon">
+            <font-awesome-icon icon="fa-solid fa-trash" @click="deletetitle(titled)" class="icon-styling" />
+            <router-link :to="{ path: `/UpdateTodo/${titled.id}` }">
+                <font-awesome-icon icon="fa-solid fa-pen" class="icon-styling" />
+            </router-link>
+            <div @click="completedTodo(titled)">
+                <font-awesome-icon :icon="titled.completed ? 'fas fa-check' : 'fas fa-check'" :class="getIconClass(titled)" />
             </div>
         </div>
     </div>
 </div>
-
-<div v-if="this.$route.path==`/ongoing`">
-    <div v-for="titled in titles" :key="titled">
-        <div class="projectBoxs" v-if="!titled.uncompleted" :class="titled.uncompleted ? 'green' : 'white'">
-            <div class="display">
-                <div @click="showDetails(titled)" class="titleHeading"> {{ titled.title }}
-
-                    <div v-if="titled.showDetail" class="deatilHeading">
-                        {{ titled.description }}
-                    </div>
-                </div>
-                <div class="icon">
-                    <font-awesome-icon icon="fa-solid fa-trash" @click="deletetitle(titled)" class="icon-styling"/>
-
-                    <router-link :to="{ path: `/UpdateTodo/${titled.id}` }">
-                        <font-awesome-icon icon="fa-solid fa-pen" class="icon-styling"/>
-                    </router-link>
-                    <div @click="completedTodo(titled)">
-                        <font-awesome-icon :icon="titled.uncompleted ? 'fas fa-check' : 'fas fa-check'" :class="titled.uncompleted ? 'green-icon' : 'white-icon'" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="noTodo" v-if="filteredTitles.length === 0 && this.$route.path === '/'">
+    <p>ADD TODO </p>
 </div>
-
-<div v-if="this.$route.path==`/completed`">
-    <div v-for="titled in titles" :key="titled">
-        <div class="projectBoxs" v-if="titled.uncompleted" :class="titled.uncompleted ? 'green' : 'white'">
-            <div class="display">
-                <div @click="showDetails(titled)" class="titleHeading"> {{ titled.title }}
-
-                    <div v-if="titled.showDetail" class="deatilHeading">
-                        {{ titled.description }}
-                    </div>
-                </div>
-                <div class="icon">
-                    <font-awesome-icon icon="fa-solid fa-trash" @click="deletetitle(titled)" class="icon-styling" />
-
-                    <router-link :to="{ path: `/UpdateTodo/${titled.id}` }">
-                        <font-awesome-icon icon="fa-solid fa-pen"  class="icon-styling" />
-                    </router-link>
-                    <div @click="completedTodo(titled)">
-                        <font-awesome-icon icon="fas fa-check" :class="titled.uncompleted ? 'green-icon' : 'white-icon'" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="noTodo" v-if="filteredTitles.length === 0 && this.$route.path === '/completed'">
+    <p>NO COMPLETED TODO </p>
+</div>
+<div class="noTodo" v-if="filteredTitles.length === 0 && this.$route.path === '/ongoing'">
+    <p>NO ONGOING TODO</p>
 </div>
 </template>
 
@@ -98,7 +50,7 @@ export default {
                 'title': todoss[i].title,
                 'description': todoss[i].description,
                 'showDetail': false,
-                'uncompleted': todoss[i].uncompleted
+                'completed': todoss[i].completed
             });
         }
 
@@ -108,8 +60,20 @@ export default {
             console.log(this.$route.path)
             return this.$route.path;
         },
+        filteredTitles() {
+            if (this.$route.path === '/') {
+                return this.titles;
+            } else if (this.$route.path === '/ongoing') {
+                return this.titles.filter(titled => !titled.completed);
+            } else if (this.$route.path === '/completed') {
+                return this.titles.filter(titled => titled.completed);
+            }
+            return [];
+        },
+
     },
     methods: {
+
         deletetitle(title) {
             console.log(title)
             const index = this.titles.indexOf(title);
@@ -120,6 +84,14 @@ export default {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(this.titles));
         },
 
+        getTitleClass(titled) {
+            return titled.completed ? 'green' : 'white';
+        },
+
+        getIconClass(titled) {
+            return titled.completed ? 'green-icon' : 'white-icon';
+        },
+
         showDetails(detailed) {
             detailed.showDetail = !detailed.showDetail;
         },
@@ -128,8 +100,8 @@ export default {
             console.log(idforComplete)
             const index = this.titles.indexOf(idforComplete);
             console.log(index);
-            console.log(this.titles[index].uncompleted)
-            this.titles[index].uncompleted = !this.titles[index].uncompleted
+            console.log(this.titles[index].completed)
+            this.titles[index].completed = !this.titles[index].completed
             localStorage.setItem(STORAGE_KEY, JSON.stringify(this.titles));
         }
 
@@ -145,10 +117,24 @@ export default {
     margin-top: 2rem;
     font-weight: 600;
 }
-.icon-styling{
+
+.icon-styling {
     color: gray;
     font-size: 25px;
 }
+
+.noTodo {
+    text-align: center;
+    background-color: white;
+    padding: 8rem;
+    align-items: center;
+    margin-top: 3rem;
+    font-size: 50px;
+    font-weight: 600;
+    font-family: cursive;
+    color: red;
+}
+
 .clicked {
     position: relative;
     /* Add relative positioning */
@@ -174,12 +160,12 @@ export default {
 
 .green {
     border-left: 10px solid green;
-    
+
 }
 
 .green-icon {
     color: green;
-   font-size: 30px;
+    font-size: 30px;
 }
 
 .white {
@@ -193,13 +179,12 @@ export default {
 
 .projectBoxs {
     width: 80%;
-
     background-color: white;
     margin-top: 2rem;
     height: fit-content;
     margin-left: 3%;
+    margin-right: 3%;
     margin-bottom: 20px;
-    margin-left: 3%;
     margin-top: 2rem;
     border-radius: 1rem;
     cursor: pointer;
@@ -210,17 +195,9 @@ export default {
 
 }
 
-.strip {
-    border-radius: 1rem;
-    width: 1%;
-    margin-left: -2rem;
-    display: flex;
-
-}
-
 .display {
-
-    width: 95%;
+    height: fit-content;
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -236,9 +213,10 @@ export default {
 .titleHeading {
     font-size: 30px;
     font-weight: 600;
-    width: 80%;
+    width: 70%;
+    overflow: auto;
     text-align: left;
-    height: 100%;
+    height: auto;
 
 }
 
@@ -246,5 +224,39 @@ export default {
     font-size: 20px;
     margin-top: 0.8rem;
     font-weight: 500;
+}
+
+@media screen and (min-width: 120px) and (max-width: 427px) {
+    .viewAll {
+        font-size: 12px;
+    }
+
+    .deatilHeading {
+        font-size: 10px;
+    }
+
+    .titleHeading {
+        font-size: 13px;
+    }
+
+    .white-icon {
+        font-size: 15px;
+    }
+
+    .green-icon {
+        font-size: 15px;
+    }
+
+    .icon-styling {
+        font-size: 15px;
+    }
+
+    .projectBoxs {
+        padding: 1rem;
+    }
+
+    .noTodo {
+        font-size: 14px;
+    }
 }
 </style>

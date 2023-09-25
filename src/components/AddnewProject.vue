@@ -1,16 +1,16 @@
 <template>
-    <div class="todoBox">
-        <h3 class="title">TITLE</h3>
-        <input class="titleBox" v-model="title" type="text">
-        <div v-if="errorMessage.lenght != 0 && title.length == 0" class="error">* please enter title</div>
-        <h4 class="title">DETAILS</h4>
-        <textarea class="detailBox" v-model="details" rows="4" cols="30"></textarea>
-        <div v-if="errorMessage.lenght != 0 && details.length == 0" class="error">* please enter details</div>
-        <button class="addTodo" @click="addTodo()">Add todo</button>
-    </div>
+<div class="todoBox">
+    <h3 class="title">TITLE</h3>
+    <input class="titleBox" v-model="title" type="text">
+    <div v-if="errorMessage.lenght != 0 && title.length == 0" class="error">* please enter title</div>
+    <h4 class="title">DETAILS</h4>
+    <textarea class="detailBox" v-model="details" rows="4" cols="30"></textarea>
+    <div v-if="errorMessage.lenght != 0 && details.length == 0" class="error">* please enter details</div>
+    <button class="addTodo" @click="addTodo()">Add todo</button>
+</div>
 </template>
-<script>
 
+<script>
 const STORAGE_KEY = 'vue-todo';
 export default {
 
@@ -19,15 +19,15 @@ export default {
         return {
             title: '',
             details: '',
-            todos : [],
+            todos: [],
             errorMessage: [],
             submitButton: false,
-            uncomplete:false
-            
+            complete: false
+
         }
     },
     created() {
-        this.todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')     
+        this.todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
     },
     methods: {
         addTodo() {
@@ -37,26 +37,28 @@ export default {
             if (this.details.length == 0) {
                 this.errorMessage.push('error');
             }
-            if(this.title.length != 0 && this.details.length != 0){
-            const id = Math.floor(Math.random()*100000); 
-            this.todos.push({
-                'id':id,
-                'title': this.title,
-                'description': this.details,
-                'uncompleted':this.uncomplete,
-            });
-            this.title = '';
-            this.details = '';
-        }
+            if (this.title.length != 0 && this.details.length != 0) {
+                const id = Math.floor(Math.random() * 100000);
+                this.todos.push({
+                    'id': id,
+                    'title': this.title,
+                    'description': this.details,
+                    'completed': this.complete,
+                });
+                this.title = '';
+                this.details = '';
+            }
             this.submitButton = true;
-            
+
             localStorage.setItem(STORAGE_KEY, JSON.stringify(this.todos));
 
             console.log(this.todos)
+            this.$router.push('/');
         }
     }
 }
 </script>
+
 <style>
 .error {
     color: red;
@@ -79,13 +81,13 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
-  
+
 }
 
 .title {
     font-size: 25px;
     width: 90%;
-   text-align: left;
+    text-align: left;
     margin-top: 2rem;
     padding-top: 1rem;
     margin-left: 2rem;
@@ -117,5 +119,24 @@ input {
     border: none;
     color: white;
     cursor: pointer;
+}
+
+@media screen and (min-width: 120px) and (max-width: 427px) {
+    .title {
+        font-size: 18px;
+    }
+
+    .addTodo {
+        font-size: 20px;
+        padding: 1rem;
+    }
+
+    input {
+        font-size: 17px;
+    }
+
+    .detailBox {
+        font-size: 15px;
+    }
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
 <div class="content">
-    <router-link to="/" class="heading" :class="{ header: currentRoute === '/' || currentRoute === '/completed' || currentRoute === '/ongoing'}"><span>Project</span></router-link>
-    <router-link to="/addnewproject" class="heading" :class="{ header: currentRoute === '/addnewproject' }">
-      <span>Add a new Project</span>
+    <router-link to="/" :class="[{ header: currentRoute === '/' || currentRoute === '/completed' || currentRoute === '/ongoing' } , 'heading']"><span>Project</span></router-link>
+    <router-link to="/addnewproject" :class="[{ header: currentRoute === '/addnewproject' },'heading']">
+        <span>Add a new Project</span>
     </router-link>
     <router-view></router-view>
 </div>
@@ -20,7 +20,6 @@ export default {
 </script>
 
 <style scoped>
-
 .content {
     padding: 0;
     margin: -7px;
@@ -44,18 +43,24 @@ export default {
 }
 
 .header {
-  position: relative; /* Add relative positioning */
-  color: rgb(99, 99, 99);
+    position: relative;
+    color: rgb(99, 99, 99);
 }
 
 .header::after {
-  content: ""; 
-  position: absolute;
-  bottom: -3px; 
-  left: 0;
-  right: 0;
-  height: 3px; 
-  background-color: rgb(65, 109, 49);
-  transition: all linear 0.5s;
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: rgb(65, 109, 49);
+    transition: all linear 0.5s;
+}
+
+@media screen and (min-width: 120px) and (max-width: 427px) {
+    span {
+        font-size: 20px;
+    }
 }
 </style>
