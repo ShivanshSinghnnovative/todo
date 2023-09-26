@@ -1,11 +1,12 @@
 <template>
     <div class="todoBox">
         <h3 class="title">TITLE</h3>
-        <input class="titleBox" v-model="title" type="text">
-        <div v-if="errorMessage.length != 0 && title.trim().length == 0" class="error">* please enter title</div>
+        <input class="titleBox" v-model="project.title" type="text">
+        <div v-if="errorMessage.length != 0 && project.title.trim().length == 0" class="error">* please enter title</div>
         <h4 class="title">DETAILS</h4>
-        <textarea class="detailBox" v-model="details" rows="4" cols="30"></textarea>
-        <div v-if="errorMessage.length != 0 && details.trim().length == 0" class="error">* please enter details</div>
+        <textarea class="detailBox" v-model="project.details" rows="4" cols="30"></textarea>
+        <div v-if="errorMessage.length != 0 && project.details.trim().length == 0" class="error">* please enter details
+        </div>
 
         <button v-if="typeof (this.$route.params.id) == 'string'" class="updatedTodo" @click="updateProject()">Update
             Project</button>
@@ -21,8 +22,10 @@ export default {
     name: 'AddnewTodo',
     data() {
         return {
-            title: '',
-            details: '',
+            project: {
+                title: '',
+                details: '',
+            },
             todos: [],
             errorMessage: [],
             submitButton: false,
@@ -40,43 +43,37 @@ export default {
             if (typeof (this.index) === 'string') {
                 const id = this.$route.params.id;
                 this.editIndex = this.todos.findIndex(todo => todo.id == id);
-                this.title = this.todos[this.editIndex].title.trim();
-                this.details = this.todos[this.editIndex].description.trim();
+                this.project.title = this.todos[this.editIndex].title.trim();
+                this.project.details = this.todos[this.editIndex].description.trim();
             }
         },
         updateProject() {
-            if (this.title.trim().length == 0) {
+            if (this.project.title.trim().length == 0 || this.project.details.trim().length == 0) {
                 this.errorMessage.push('titlenotpresent');
             }
-            if (this.details.trim().length == 0) {
-                this.errorMessage.push('error');
-            }
-            if (this.details.trim().length != 0 && this.title.trim().length != 0) {
-                this.todos[this.editIndex].title = this.title;
-                this.todos[this.editIndex].description = this.details;
-                console.log(this.todos[this.editIndex].title);
+
+            if (this.project.details.trim().length != 0 && this.project.title.trim().length != 0) {
+                this.todos[this.editIndex].title = this.project.title;
+                this.todos[this.editIndex].description = this.project.details;
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(this.todos));
                 this.$router.push('/');
             }
 
         },
         addTodo() {
-            if (this.title.trim().length == 0) {
+            if (this.project.title.trim().length == 0 || this.project.details.trim().length == 0) {
                 this.errorMessage.push('titlenotpresent');
             }
-            if (this.details.trim().length == 0) {
-                this.errorMessage.push('error');
-            }
-            if (this.title.trim().length != 0 && this.details.trim().length != 0) {
+            if (this.project.title.trim().length != 0 && this.project.details.trim().length != 0) {
                 const id = Math.floor(Math.random() * 100000);
                 this.todos.push({
                     'id': id,
-                    'title': this.title,
-                    'description': this.details,
+                    'title': this.project.title,
+                    'description': this.project.details,
                     'completed': this.complete,
                 });
-                this.title = '';
-                this.details = '';
+                this.project.title = '';
+                this.project.details = '';
                 this.errorMessage = ''
             }
             this.submitButton = true;

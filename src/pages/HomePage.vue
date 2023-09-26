@@ -157,7 +157,6 @@ export default {
     font-weight: 600;
     width: 70%;
     white-space: normal;
-    height: 80px;
     word-break: break-word;
     text-align: left;
     height: auto;
@@ -169,7 +168,6 @@ export default {
     margin-top: 0.8rem;
     font-weight: 500;
     white-space: normal;
-    height: 80px;
     word-break: break-word;
 }
 
