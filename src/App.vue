@@ -1,5 +1,5 @@
 <template>
-<headingText></headingText>
+    <headingText></headingText>
 </template>
 
 <script>
@@ -11,7 +11,3 @@ export default {
     },
 }
 </script>
-
-<style scoped>
-
-</style>

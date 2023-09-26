@@ -7,12 +7,13 @@
         <router-view></router-view>
     </nav>
 </template>
-<script>
 
-export default{
-    name:'headingText',
+<script>
+export default {
+    name: 'headingText',
 }
 </script>
+
 <style scoped>
 .content {
     padding: 0;
@@ -35,9 +36,8 @@ export default{
     text-decoration: none;
 }
 
-
-nav a.router-link-active{
-border-bottom: 4px solid green ;
+nav a.router-link-active {
+    border-bottom: 4px solid green;
 
 }
 

@@ -1,7 +1,6 @@
 import { createWebHashHistory, createRouter } from "vue-router";
 const AddnewTodo = () => import("./pages/AddnewProject.vue");
 const HomePage = () => import("./pages/HomePage.vue");
-const UpdateTodo = () => import("./components/UpdatedProject.vue");
 const NotFound = () => import("./components/NotFound.vue");
 
 const routes = [
@@ -9,22 +8,22 @@ const routes = [
     name: "HomePage",
     path: "/",
     component: HomePage,
-    redirect: '/viewall',
+    redirect: "/viewall",
     children: [
       {
         name: "OngoingPage",
-        path: "ongoing", 
-        component: HomePage, 
+        path: "ongoing",
+        component: HomePage,
       },
       {
         name: "ViewAll",
-        path: "viewall", 
-        component: HomePage, 
+        path: "viewall",
+        component: HomePage,
       },
       {
         name: "CompletedPage",
-        path: "completed", 
-        component: HomePage, 
+        path: "completed",
+        component: HomePage,
       },
     ],
   },
@@ -35,8 +34,8 @@ const routes = [
   },
   {
     name: "UpdateTodo",
-    path: "/UpdateTodo/:id",
-    component: UpdateTodo,
+    path: "/addnewtodo/:id",
+    component: AddnewTodo,
   },
   {
     name: "NotFound",

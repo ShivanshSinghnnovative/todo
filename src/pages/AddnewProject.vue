@@ -6,13 +6,16 @@
         <h4 class="title">DETAILS</h4>
         <textarea class="detailBox" v-model="details" rows="4" cols="30"></textarea>
         <div v-if="errorMessage.length != 0 && details.trim().length == 0" class="error">* please enter details</div>
-        <button class="addTodo" @click="addTodo()">Add todo</button>
+
+        <button v-if="typeof (this.$route.params.id) == 'string'" class="updatedTodo" @click="updateProject()">Update
+            Project</button>
+        <button v-else class="addTodo" @click="addTodo()">Add Project</button>
     </div>
 </template>
 
-    
 <script>
-const STORAGE_KEY = 'vue-todo';
+const STORAGE_KEY = process.env.VUE_APP_STORAGE_KEY;
+
 export default {
 
     name: 'AddnewTodo',
@@ -23,14 +26,40 @@ export default {
             todos: [],
             errorMessage: [],
             submitButton: false,
-            complete: false
-
+            complete: false,
+            editIndex: -1,
+            index: this.$route.params.id,
         }
     },
     mounted() {
         this.todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+        this.updateTitle();
     },
     methods: {
+        updateTitle() {
+            if (typeof (this.index) === 'string') {
+                const id = this.$route.params.id;
+                this.editIndex = this.todos.findIndex(todo => todo.id == id);
+                this.title = this.todos[this.editIndex].title.trim();
+                this.details = this.todos[this.editIndex].description.trim();
+            }
+        },
+        updateProject() {
+            if (this.title.trim().length == 0) {
+                this.errorMessage.push('titlenotpresent');
+            }
+            if (this.details.trim().length == 0) {
+                this.errorMessage.push('error');
+            }
+            if (this.details.trim().length != 0 && this.title.trim().length != 0) {
+                this.todos[this.editIndex].title = this.title;
+                this.todos[this.editIndex].description = this.details;
+                console.log(this.todos[this.editIndex].title);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(this.todos));
+                this.$router.push('/');
+            }
+
+        },
         addTodo() {
             if (this.title.trim().length == 0) {
                 this.errorMessage.push('titlenotpresent');
@@ -56,7 +85,6 @@ export default {
 
             if (this.errorMessage.length == 0) {
                 this.$router.push('/');
-
             }
 
         }
@@ -64,7 +92,6 @@ export default {
 }
 </script>
 
-    
 <style>
 .error {
     color: red;
@@ -73,6 +100,17 @@ export default {
     text-align: left;
     margin-top: 1rem;
     margin-left: 2rem;
+}
+
+.updatedTodo {
+    background-color: rgb(78, 119, 78);
+    padding: 1rem;
+    margin: 1rem;
+    font-size: 30px;
+    border-radius: .5rem;
+    border: none;
+    color: white;
+    cursor: pointer;
 }
 
 .todoBox {
@@ -143,6 +181,11 @@ input {
 
     .detailBox {
         font-size: 15px;
+    }
+
+    .updatedTodo {
+        padding: .5rem;
+        font-size: 20px;
     }
 }
 </style>
