@@ -156,7 +156,9 @@ export default {
     font-size: 30px;
     font-weight: 600;
     width: 70%;
-    overflow: auto;
+    white-space: normal;
+    height: 80px;
+    word-break: break-word;
     text-align: left;
     height: auto;
 
@@ -166,6 +168,9 @@ export default {
     font-size: 20px;
     margin-top: 0.8rem;
     font-weight: 500;
+    white-space: normal;
+    height: 80px;
+    word-break: break-word;
 }
 
 @media screen and (min-width: 120px) and (max-width: 427px) {
